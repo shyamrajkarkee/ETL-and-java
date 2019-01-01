@@ -1,0 +1,30 @@
+create external table creditcard(TRANSACTION_ID string,
+				TIMEID string,
+				CUST_CC_NO string, 
+				CUST_SSN string, 
+				BRANCH_CODE string,
+				TRANSACTION_VALUE string)
+partitioned by (TRANSACTION_TYPE string)
+row format delimited
+fields terminated by '\t'
+STORED AS TEXTFILE
+location '/user/maria_dev/Credit_Card_System/creditcard/partition';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

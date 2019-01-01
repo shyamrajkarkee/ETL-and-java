@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="meta-connect">
+    <start to="time_meta"/>
+
+    <action name="time_meta">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec incremental_time</command>              
+        
+        <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>
+        </sqoop>
+
+
+ <ok to="update_time"/>
+      <error to="fail"/>
+   </action>
+   <action name="update_time">
+      <hive xmlns="uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/Credit_Card_System/oozie_job/time/Copydata.hql</script>
+      </hive>
+
+
+
+
+
+        <ok to="creditcard_meta"/>
+        <error to="fail"/>
+    </action>
+
+    <action name="creditcard_meta">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec incremental_creditcard</command>              
+        
+        <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>
+        </sqoop>
+
+
+
+ <ok to="update_creditcard"/>
+      <error to="fail"/>
+   </action>
+   <action name="update_creditcard">
+      <hive xmlns="uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/Credit_Card_System/oozie_job/creditcard/Copydata.hql</script>
+      </hive>
+
+
+        <ok to="branch_meta"/>
+        <error to="fail"/>
+    </action>
+
+<action name="branch_meta">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec incremental_branch</command>              
+        
+        <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>
+        </sqoop>
+
+      <ok to="update_branch"/>
+      <error to="fail"/>
+   </action>
+   <action name="update_branch">
+      <hive xmlns="uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/Credit_Card_System/oozie_job/branch/Copydata.hql</script>
+      </hive>
+
+
+        <ok to="customer_meta"/>
+        <error to="fail"/>
+    </action>
+
+    <action name="customer_meta">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec incremental_customer</command>              
+        
+        <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>
+        </sqoop>
+      <ok to="update_customer"/>
+      <error to="fail"/>
+   </action>
+   <action name="update_customer">
+      <hive xmlns="uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/Credit_Card_System/oozie_job/customer/Copydata.hql</script>
+      </hive>
+
+
+
+        <ok to="end"/>
+        <error to="fail"/>
+    </action>
+
+
+<kill name="fail">
+        <message> Workflow failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
+
+

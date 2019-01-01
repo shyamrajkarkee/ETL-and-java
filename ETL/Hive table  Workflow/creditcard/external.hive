@@ -1,0 +1,15 @@
+drop table temp_creditcard;
+drop table creditcard;
+
+create external table temp_creditcard ( TRANSACTION_ID string,
+					TIMEID string,
+					CUST_CC_NO string, 
+					CUST_SSN string, 
+					BRANCH_CODE string,
+					TRANSACTION_TYPE string,
+					TRANSACTION_VALUE string)
+row format delimited 
+fields terminated by '\t'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/creditcard/CDW_SAPP_F_CREDIT_CARD';
+

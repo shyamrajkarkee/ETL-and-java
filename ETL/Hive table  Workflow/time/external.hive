@@ -1,0 +1,14 @@
+drop table temp_time;
+drop table time;
+
+create external table temp_time  (TRANSACTION_ID string,
+                                   TIMEID string,
+				DAY string,
+				MONTH string,
+				QUARTER string, 
+				YEAR string)
+row format delimited 
+fields terminated by '\t'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/time/CDW_SAPP_D_TIME';
+

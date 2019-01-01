@@ -1,0 +1,54 @@
+Time
+####
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Meta-Sqoop job
+*********
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sqoop job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --create time -- import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select TRANSACTION_ID,concat(YEAR,lpad(MONTH,2,'0'),lpad(DAY,2,'0')) as TIMEID, DAY, MONTH, ceiling(MONTH/3) as QUARTER,YEAR FROM CDW_SAPP_CREDITCARD WHERE $CONDITIONS' --fields-terminated-by '\t' --target-dir /user/maria_dev/Credit_Card_System/time/CDW_SAPP_D_TIME -m1
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+incremental job 
+****************
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sqoop job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --create incremental_time -- import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select TRANSACTION_ID,concat(YEAR,lpad(MONTH,2,'0'),lpad(DAY,2,'0')) as TIMEID, DAY, MONTH, ceiling(MONTH/3) as QUARTER,YEAR FROM CDW_SAPP_CREDITCARD WHERE $CONDITIONS' --fields-terminated-by '\t' --incremental append --check-column TRANSACTION_ID --last-value '0' --target dir /user/maria_dev/Credit_Card_System/time/CDW_SAPP_D_TIME -m1
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Staging Table
+*************
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+create external table temp_time  (TRANSACTION_ID string,
+                                   TIMEID string,
+				   DAY string,
+				   MONTH string,
+				   QUARTER string, 
+				   YEAR string)
+row format delimited 
+fields terminated by '\t'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/time/CDW_SAPP_D_TIME';
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Partition Table
+****************
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+create external table time(TRANSACTION_ID string,
+                                TIMEID string,
+				DAY string,
+				MONTH string, 
+				YEAR string)
+partitioned by (QUARTER string)
+row format delimited
+fields terminated by '\t'
+STORED AS TEXTFILE
+location '/user/maria_dev/Credit_Card_System/time/partition';
+SET hive.exec.dynamic.partition = true;
+SET hive.exec.dynamic.partition.mode = nonstrict;
+insert overwrite table time 
+partition (quarter)
+select TRANSACTION_ID,TIMEID,DAY ,MONTH ,YEAR,QUARTER from temp_time
+
+#############################################################################E-N-D##########################################################################################################
+

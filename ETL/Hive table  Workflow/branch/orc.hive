@@ -1,0 +1,29 @@
+create external table branch (BRANCH_CODE string,
+									 BRANCH_NAME string,
+									BRANCH_STREET string,
+									BRANCH_CITY string, 
+									BRANCH_STATE string, 
+									BRANCH_PHONE string,
+								    LAST_UPDATED timestamp)
+partitioned by (BRANCH_ZIP string)
+row format delimited
+fields terminated by '\t'
+STORED AS TEXTFILE
+location '/user/maria_dev/Credit_Card_System/branch/partition';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,28 @@
+create external table time(TRANSACTION_ID string,
+                                TIMEID string,
+				DAY string,
+				MONTH string, 
+				YEAR string)
+partitioned by (QUARTER string)
+row format delimited
+fields terminated by '\t'
+STORED AS TEXTFILE
+location '/user/maria_dev/Credit_Card_System/time/partition';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

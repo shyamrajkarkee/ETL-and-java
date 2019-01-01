@@ -1,0 +1,12 @@
+customer Sqoop
+##############
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sqoop import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select  CONCAT(UCASE(LEFT(FIRST_NAME,1)), lower(SUBSTRING(FIRST_NAME, 2))) as CUST_F_NAME, lower(MIDDLE_NAME) as CUST_M_NAME, CONCAT(UCASE(LEFT(LAST_NAME, 1)), lower(SUBSTRING(LAST_NAME, 2))) as CUST_L_NAME, SSN as CUST_SSN, CREDIT_CARD_NO as CUST_CC_NO, concat(APT_NO," ",STREET_NAME) as CUST_STREET, CUST_CITY, CUST_STATE,CUST_COUNTRY, coalesce(CUST_ZIP, 999999) as CUST_ZIP, CONCAT("(",SUBSTRING(CUST_PHONE,1,3),")",SUBSTRING(CUST_PHONE,4,3),"-",SUBSTRING(CUST_PHONE,7,4)) AS CUST_PHONE, CUST_EMAIL, LAST_UPDATED from CDW_SAPP_CUSTOMER WHERE $CONDITIONS' -m 1 --check-column LAST_UPDATED --incremental append --target-dir /user/maria_dev/Credit_Card_System/customer/CDW_SAPP_D_CUSTOMER --fields-terminated-by '\t';
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+Creditcard
+#############
+
+Meta-sqoop-job
+**********
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sqoop job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --create creditcard -- import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select TRANSACTION_ID, concat(YEAR, lpad(MONTH, 2, '0'), lpad(DAY, 2,'0')) as TIMEID,CREDIT_CARD_NO AS CUST_CC_NO,CUST_SSN,BRANCH_CODE, TRANSACTION_TYPE,TRANSACTION_VALUE FROM CDW_SAPP_CREDITCARD WHERE $CONDITIONS' --fields-terminated-by '\t' --target-dir /user/maria_dev/Credit_Card_System/creditcard/CDW_SAPP_F_CREDIT_CARD -m1
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+incremental job
+****************
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --create incremental_creditcard -- import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select TRANSACTION_ID, concat(YEAR, lpad(MONTH, 2, '0'), lpad(DAY, 2,'0')) as TIMEID,CREDIT_CARD_NO AS CUST_CC_NO,CUST_SSN,BRANCH_CODE, TRANSACTION_TYPE,TRANSACTION_VALUE FROM CDW_SAPP_CREDITCARD WHERE $CONDITIONS' --fields-terminated-by '\t' --incremental append --check-column BRANCH_CODE --last-value '0' --target-dir /user/maria_dev/Credit_Card_System/creditcard/CDW_SAPP_F_CREDIT_CARD -m1
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Staging Table
+*************
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+create external table temp_creditcard ( TRANSACTION_ID string,
+					TIMEID string,
+					CUST_CC_NO string, 
+					CUST_SSN string, 
+					BRANCH_CODE string,
+					TRANSACTION_TYPE string,
+					TRANSACTION_VALUE string)
+row format delimited 
+fields terminated by '\t'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/creditcard/CDW_SAPP_F_CREDIT_CARD';
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Partition Table
+***************
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+create external table creditcard(TRANSACTION_ID string,
+				TIMEID string,
+				CUST_CC_NO string, 
+				CUST_SSN string, 
+				BRANCH_CODE string,
+				TRANSACTION_VALUE string)
+partitioned by (TRANSACTION_TYPE string)
+row format delimited
+fields terminated by '\t'
+STORED AS TEXTFILE
+location '/user/maria_dev/Credit_Card_System/creditcard/partition';
+SET hive.exec.dynamic.partition = true;
+SET hive.exec.dynamic.partition.mode = nonstrict;
+insert into creditcard 
+partition (TRANSACTION_TYPE)
+select TRANSACTION_ID ,TIMEID,CUST_CC_NO ,CUST_SSN,BRANCH_CODE,TRANSACTION_VALUE,TRANSACTION_TYPE
+from temp_creditcard
+
+###############################################################################E-N-D#######################################################################################################

@@ -1,0 +1,34 @@
+create external table customer ( CUST_F_NAME STRING ,
+									 CUST_M_NAME STRING ,
+									 CUST_L_NAME STRING,
+									  CUST_SSN STRING,
+	 								CUST_CC_NO STRING,
+									  CUST_STREET STRING,
+									  CUST_CITY STRING,
+									  
+									  CUST_COUNTRY STRING,
+									 
+									  CUST_PHONE STRING, 
+									  CUST_EMAIL STRING, 
+									 LAST_UPDATED timestamp )
+partitioned by(CUST_STATE STRING, CUST_ZIP STRING)
+row format delimited 
+fields terminated by '\t'
+STORED AS TEXTFILE
+location '/user/maria_dev/Credit_Card_System/customer/partition/';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

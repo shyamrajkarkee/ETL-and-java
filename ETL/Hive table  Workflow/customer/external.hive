@@ -1,0 +1,20 @@
+drop table temp_customer;
+drop table customer;
+
+create external table temp_customer ( CUST_F_NAME STRING ,
+									 CUST_M_NAME STRING ,
+									 CUST_L_NAME STRING,
+									  CUST_SSN STRING,
+									  CUST_CC_NO STRING, 
+									  CUST_STREET STRING,
+									  CUST_CITY STRING,
+									  CUST_STATE STRING,
+									  CUST_COUNTRY STRING,
+									 CUST_ZIP STRING,
+									  CUST_PHONE STRING, 
+									  CUST_EMAIL STRING, 
+									 LAST_UPDATED timestamp )
+row format delimited 
+fields terminated by '\t'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/customer/CDW_SAPP_D_CUSTOMER';

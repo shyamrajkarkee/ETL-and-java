@@ -1,0 +1,7 @@
+Creditcard sqoop
+################
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select TRANSACTION_ID, concat(YEAR, lpad(MONTH, 2, '0'), lpad(DAY, 2,'0')) as TIMEID,CREDIT_CARD_NO AS CUST_CC_NO,CUST_SSN,BRANCH_CODE, TRANSACTION_TYPE,TRANSACTION_VALUE FROM CDW_SAPP_CREDITCARD WHERE $CONDITIONS' -m 1 --check-column BRANCH_CODE --incremental append --target-dir /user/maria_dev/Credit_Card_System/creditcard/CDW_SAPP_F_CREDIT_CARD --fields-terminated-by '\t'
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

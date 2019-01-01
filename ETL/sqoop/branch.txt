@@ -1,0 +1,7 @@
+Branch sqoop
+#####
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sqoop import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query 'select BRANCH_CODE, BRANCH_NAME, BRANCH_STREET, BRANCH_CITY, BRANCH_STATE,coalesce(BRANCH_ZIP, 999999) as BRANCH_ZIP ,concat("(",SUBSTRING(BRANCH_PHONE,1,3),")",SUBSTRING(BRANCH_PHONE,4,3),"-",SUBSTRING(BRANCH_PHONE,7,4)) as BRANCH_PHONE, LAST_UPDATED from CDW_SAPP_BRANCH WHERE $CONDITIONS' -m 1 --check-column BRANCH_CODE --incremental append --target-dir /user/maria_dev/Credit_Card_System/branch/CDW_SAPP_D_BRANCH --fields-terminated-by '\t'
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
